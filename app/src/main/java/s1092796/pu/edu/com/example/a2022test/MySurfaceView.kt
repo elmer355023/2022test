@@ -10,6 +10,7 @@ class MySurfaceView(context: Context?, attrs: AttributeSet?) : SurfaceView(conte
     SurfaceHolder.Callback {
     var surfaceHolder: SurfaceHolder
     var BG: Bitmap
+    var BGmoveX:Int = 0
 
     init {
         surfaceHolder = getHolder()
@@ -36,11 +37,24 @@ class MySurfaceView(context: Context?, attrs: AttributeSet?) : SurfaceView(conte
     }
 
     fun drawSomething(canvas:Canvas) {
-        var SrcRect: Rect = Rect(0, 0, BG.width, BG.height) //裁切
+        var SrcRect: Rect = Rect(0, 0, BG.width, BG.height)
         var w:Int = width
         var h:Int = height
-        var DestRect:Rect = Rect(0, 0, w, h)
-        canvas.drawBitmap(BG, SrcRect, DestRect, null)
+
+        BGmoveX --
+        var BGnewX:Int = w + BGmoveX
+
+        if (BGnewX <= 0) {
+            BGmoveX = 0
+
+            canvas.drawBitmap(BG, BGmoveX.toFloat(), 0f, null)
+        } else {
+
+            var DestRect:Rect = Rect(BGmoveX, 0, BGmoveX+w, h)
+            canvas.drawBitmap(BG, SrcRect, DestRect, null)
+            DestRect = Rect(BGnewX, 0, BGnewX+w, h)
+            canvas.drawBitmap(BG, SrcRect, DestRect, null)
+        }
 
         val paint = Paint(Paint.ANTI_ALIAS_FLAG)
         paint.color = Color.BLUE
